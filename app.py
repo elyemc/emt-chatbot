@@ -25,6 +25,8 @@ st.title("🚑 EMT Medical Orders Assistant")
 st.markdown("Ask a question based on the official CRS medical standing orders PDF.")
 
 # 📄 Load and index the PDF using Chroma
+import tempfile
+
 @st.cache_resource
 def load_vectorstore():
     reader = PdfReader("medical_orders.pdf")
@@ -36,7 +38,11 @@ def load_vectorstore():
     docs = splitter.create_documents([raw_text])
 
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    vectorstore = Chroma.from_documents(docs, embeddings, persist_directory="chroma_db")
+
+    # Use a temporary directory to avoid SQLite errors on Streamlit Cloud
+    chroma_dir = tempfile.mkdtemp()
+    vectorstore = Chroma.from_documents(docs, embeddings, persist_directory=chroma_dir)
+
     return vectorstore
 
 vectorstore = load_vectorstore()
