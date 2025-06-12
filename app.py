@@ -6,6 +6,12 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
+# 🔎 DEBUG: make sure the secret came through
+if os.getenv("OPENAI_API_KEY"):
+    st.sidebar.success("🔑 OPENAI_API_KEY loaded!")
+else:
+    st.sidebar.error("❌ OPENAI_API_KEY NOT found!")
+    st.stop()
 
 # --- Page setup ---
 st.set_page_config(page_title="🚑 EMT Medical Orders Assistant", layout="wide")
