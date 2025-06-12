@@ -5,3 +5,4 @@ langchain-openai
 chromadb
 pypdf
 sentence-transformers
+protobuf<4.21.0
