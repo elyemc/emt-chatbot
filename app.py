@@ -3,7 +3,7 @@ import streamlit as st
 from pypdf import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from langchain_community.chat_models import ChatOpenAI
 
@@ -36,7 +36,7 @@ def load_vectorstore():
     docs = splitter.create_documents([raw_text])
 
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    vectorstore = Chroma.from_documents(docs, embeddings)
+    vectorstore = Chroma.from_documents(docs, embeddings, persist_directory="chroma_db")
     return vectorstore
 
 vectorstore = load_vectorstore()
