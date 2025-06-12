@@ -8,7 +8,7 @@ from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 
 # ✅ Page config must come first!
-st.set_page_config(page_title="🚑 EMT Medical Orders Assistant", layout="wide")
+st.set_page_config(page_title="🚑 HAWC CRS Assistant", layout="wide")
 
 # 🔎 DEBUG: Make sure API key is loaded
 if os.getenv("OPENAI_API_KEY"):
@@ -16,6 +16,9 @@ if os.getenv("OPENAI_API_KEY"):
 else:
     st.sidebar.error("❌ OPENAI_API_KEY NOT found!")
     st.stop()
+
+# ⛓️ Grab the key from env var
+openai_api_key = os.getenv("OPENAI_API_KEY")
 
 # 🎯 App title and description
 st.title("🚑 EMT Medical Orders Assistant")
@@ -32,14 +35,14 @@ def load_vectorstore():
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     docs = splitter.create_documents([raw_text])
 
-    embeddings = OpenAIEmbeddings()
+    embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
     vectorstore = Chroma.from_documents(docs, embeddings)
     return vectorstore
 
 vectorstore = load_vectorstore()
 
 # 🔗 Create RetrievalQA chain
-llm = ChatOpenAI(temperature=0)
+llm = ChatOpenAI(temperature=0, openai_api_key=openai_api_key)
 qa = RetrievalQA.from_chain_type(
     llm=llm,
     retriever=vectorstore.as_retriever(),
